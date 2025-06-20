@@ -28,6 +28,11 @@ jobs:
       - name: Run Microsoft Security DevOps Analysis (Generic)
         id: general-scan
         uses: microsoft/security-devops-action@latest
+        
+      - name: Setup .NET 6 runtime for CredScan
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
 
       - name: Run Secret Scan using Microsoft Security DevOps
         id: secretscan
