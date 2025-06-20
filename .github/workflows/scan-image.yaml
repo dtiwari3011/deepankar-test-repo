@@ -1,16 +1,16 @@
-# name: Defender DevOps Scan (MSDO)
+name: Defender DevOps Scan (MSDO)
 
-# on:
-#   push:
-#     branches: [main]
+on:
+  push:
+    branches: [main]
 
-# permissions:
-#   contents: read
-#   id-token: write             # Required for Microsoft identity federation
-#   security-events: write      # Required for SARIF upload to GitHub Security tab
+permissions:
+  contents: read
+  id-token: write             # Required for Microsoft identity federation
+  security-events: write      # Required for SARIF upload to GitHub Security tab
 
-# env:
-#   imageTag: test-app:latest
+env:
+  imageTag: test-app:latest
 
 # jobs:
 #   defender-devops:
