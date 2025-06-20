@@ -1,0 +1,51 @@
+name: Defender DevOps Scan (MSDO)
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write             # Required for Microsoft identity federation
+  security-events: write      # Required for SARIF upload to GitHub Security tab
+
+env:
+  imageTag: test-app:latest
+
+jobs:
+  defender-devops:
+    name: Run Defender DevOps Scans
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Build Docker image for test-app
+        run: |
+          docker build -t ${{ env.imageTag }} .
+
+      - name: Run Microsoft Security DevOps Analysis
+        id: msdo
+        uses: microsoft/security-devops-action@latest
+        with:
+          policy: microsoft
+          categories: containers
+          tools: trivy
+        env:
+          GDN_TRIVY_ACTION: "image"
+          GDN_TRIVY_TARGET: "${{ env.imageTag }}"
+          GDN_TRIVY_IGNOREUNFIXED: true
+          GDN_TRIVY_SEVERITIES: "HIGH,CRITICAL"
+
+      - name: Upload results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.msdo.outputs.sarifFile }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload SARIF as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: alerts
+          path: ${{ steps.msdo.outputs.sarifFile }}
