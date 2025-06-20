@@ -28,7 +28,7 @@ jobs:
       - name: Run Microsoft Security DevOps Analysis (Generic)
         id: general-scan
         uses: microsoft/security-devops-action@latest
-        
+
       - name: Setup .NET 6 runtime for CredScan
         uses: actions/setup-dotnet@v4
         with:
@@ -53,6 +53,12 @@ jobs:
           GDN_TRIVY_TARGET: "${{ env.imageTag }}"
           GDN_TRIVY_IGNOREUNFIXED: true
           GDN_TRIVY_SEVERITIES: "HIGH,CRITICAL"
+
+      - name: Upload Secret Scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.secretscan.outputs.sarifFile }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
