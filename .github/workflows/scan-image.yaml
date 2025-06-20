@@ -59,12 +59,14 @@ jobs:
         with:
           sarif_file: ${{ steps.secretscan.outputs.sarifFile }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          category: secrets-scan   
 
       - name: Upload results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          category: container-scan 
 
       - name: Upload SARIF as build artifact
         uses: actions/upload-artifact@v4
