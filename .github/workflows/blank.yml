@@ -22,9 +22,6 @@ jobs:
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@v1
         id: msdo
-      - name: Debug Token Scope
-        run: |
-          curl -H "Authorization: token ${{ secrets.GH_PAT }}" https://api.github.com/user
 
       - name: Upload results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
