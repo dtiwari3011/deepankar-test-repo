@@ -8,7 +8,7 @@ permissions:
   contents: read
   id-token: write             # Required for Microsoft identity federation
   security-events: write      # Required for SARIF upload to GitHub Security tab
-  
+
 
 jobs:
   defender-devops:
@@ -30,7 +30,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN}}
 
       - name: Upload SARIF as build artifact
         uses: actions/upload-artifact@v4
@@ -43,5 +43,5 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
-          token: ${{ secrets.GH_PAT }}  # 🔐 Uses the PAT secret
+          token: ${{ secrets.GITHUB_TOKEN }}  # 🔐 Uses the PAT secret
 
