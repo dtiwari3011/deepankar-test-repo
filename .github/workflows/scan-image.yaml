@@ -40,6 +40,7 @@ jobs:
         with:
           policy: microsoft
           categories: secrets
+          tools: credscan
 
       - name: Run Microsoft Security DevOps Analysis
         id: msdo

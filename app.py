@@ -3,7 +3,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    azure_secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE"
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
     return "Hello from Defender Scan test image!"
 
