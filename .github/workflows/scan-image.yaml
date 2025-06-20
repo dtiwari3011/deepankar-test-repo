@@ -25,6 +25,17 @@ jobs:
         run: |
           docker build -t ${{ env.imageTag }} .
 
+      - name: Run Microsoft Security DevOps Analysis (Generic)
+        id: msdo
+        uses: microsoft/security-devops-action@latest
+
+      - name: Run Secret Scan using Microsoft Security DevOps
+        id: secretscan
+        uses: microsoft/security-devops-action@latest
+        with:
+          policy: microsoft
+          categories: secrets
+
       - name: Run Microsoft Security DevOps Analysis
         id: msdo
         uses: microsoft/security-devops-action@latest
