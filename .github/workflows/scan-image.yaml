@@ -133,6 +133,7 @@ jobs:
         with:
           policy: microsoft
           categories: containers
+          break: true
           tools: trivy
         env:
           GDN_TRIVY_ACTION: "image"
