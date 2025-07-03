@@ -15,6 +15,7 @@ permissions:
 env:
   imageTag: test-app:latest
 
+
 # jobs:
 #   defender-devops:
 #     name: Run Defender DevOps Scans
@@ -96,17 +97,29 @@ jobs:
           policy: microsoft
           categories: secrets
           tools: credscan
+          break: true
       - name: Upload Secret Scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.secretscan.outputs.sarifFile }}
           token: ${{ secrets.GITHUB_TOKEN }}
           category: secrets-scan
+      - name: Fail if secrets were found
+        run: |
+          count=$(jq '[.runs[].results[] | select(.ruleId | test("CSCAN-.*"))] | length' "${{ steps.secretscan.outputs.sarifFile }}")
+          echo "Secrets found: $count"
+          if [ "$count" -gt 0 ]; then
+            echo "❌ Secret(s) detected. Failing the job."
+            exit 1
+          else
+            echo "✅ No secrets detected."
+          fi
 
   # JOB 2 — Container Scan (Trivy)
   container-scan:
     runs-on: ubuntu-latest
     needs: secret-scan
+    if: always()  
     env:
       imageTag: test-app:latest
     steps:
@@ -121,6 +134,7 @@ jobs:
           policy: microsoft
           categories: containers
           tools: trivy
+          break: true
         env:
           GDN_TRIVY_ACTION: "image"
           GDN_TRIVY_TARGET: "${{ env.imageTag }}"
@@ -133,4 +147,14 @@ jobs:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
           token: ${{ secrets.GITHUB_TOKEN }}
           category: container-scan
+      - name: Fail if critical container vulnerabilities found
+        run: |
+          count=$(jq '[.runs[].results[] | select(.ruleId | test("^CVE-"))] | length' "${{ steps.msdo.outputs.sarifFile }}")
+          echo "Critical CVEs found: $count"
+          if [ "$count" -gt 0 ]; then
+            echo "❌ Failing due to container vulnerabilities"
+            exit 1
+          else
+            echo "✅ No critical container CVEs found"
+          fi
 
