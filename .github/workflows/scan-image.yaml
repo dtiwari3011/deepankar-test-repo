@@ -94,7 +94,7 @@ jobs:
         id: secretscan
         uses: microsoft/security-devops-action@latest
         with:
-          policy: none
+          policy: disable
           categories: secrets
           tools: credscan
           break: true
