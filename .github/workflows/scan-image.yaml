@@ -94,7 +94,7 @@ jobs:
         id: secretscan
         uses: microsoft/security-devops-action@latest
         with:
-          policy: disable
+          policy: microsoft
           categories: secrets
           tools: credscan
           break: true
@@ -104,6 +104,16 @@ jobs:
           sarif_file: ${{ steps.secretscan.outputs.sarifFile }}
           token: ${{ secrets.GITHUB_TOKEN }}
           category: secrets-scan
+      - name: Fail if secrets were found
+        run: |
+          count=$(jq '[.runs[].results[] | select(.ruleId | test("CSCAN-.*"))] | length' "${{ steps.secretscan.outputs.sarifFile }}")
+          echo "Secrets found: $count"
+          if [ "$count" -gt 0 ]; then
+            echo "❌ Secret(s) detected. Failing the job."
+            exit 1
+          else
+            echo "✅ No secrets detected."
+          fi
 
   # JOB 2 — Container Scan (Trivy)
   container-scan:
