@@ -14,7 +14,7 @@ permissions:
 
 env:
   imageTag: test-app:latest
-  
+
 
 # jobs:
 #   defender-devops:
@@ -97,6 +97,7 @@ jobs:
           policy: microsoft
           categories: secrets
           tools: credscan
+          break: true
       - name: Upload Secret Scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
