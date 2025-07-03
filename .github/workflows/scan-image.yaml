@@ -119,6 +119,7 @@ jobs:
   container-scan:
     runs-on: ubuntu-latest
     needs: secret-scan
+    if: always()  
     env:
       imageTag: test-app:latest
     steps:
